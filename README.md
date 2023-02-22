@@ -41,12 +41,12 @@ jobs:
             java-version: '11'
       - name: Download resources
         run: |
-          wget -nv --user=poc --password=Passw0rd123! https://vh.venafilab.com/poc_guide/test.apk -O ~/test.apk
-          wget --user=poc --password=Passw0rd123! https://vh.venafilab.com/poc_guide/venafipkcs11.txt -O ~/venafipkcs11.txt
+          wget https://my.repo/test.apk -O ~/test.apk
+          wget https://my.repo/venafipkcs11.txt -O ~/venafipkcs11.txt
 
       - name: Sign JAR file
         run: |
-          jarsigner -verbose -keystore NONE -storetype PKCS11 -storepass none -providerclass sun.security.pkcs11.SunPKCS11 -providerArg ~/venafipkcs11.txt -certs -tsa http://vh.venafilab.com/timestamp ~/test.apk vsign-rsa2048-cert'
+          jarsigner -verbose -keystore NONE -storetype PKCS11 -storepass none -providerclass sun.security.pkcs11.SunPKCS11 -providerArg ~/venafipkcs11.txt -certs -tsa http://timestamp.digicert.com ~/test.apk my-signing-cert'
 ```
 
 ### Optional Inputs
