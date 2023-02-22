@@ -1,0 +1,96 @@
+# action.yml
+name: csp-client-installer
+author: venafi
+description: 'Installs Venafi CSP client'
+branding:
+  icon: 'package'
+  color: 'blue'
+# This is pinned to the last major release.
+inputs:
+  tpp-url:
+    description: 'TPP URL'
+    required: true
+    default: 'https://tpp.example.com'
+  use-sudo:
+    description: 'set to true if install-dir location requires sudo privs'
+    required: false
+    default: 'false'
+runs:
+  using: "composite"
+  steps:
+    # We verify the version against a SHA **in the published action itself**, not in the GCS bucket.
+    - shell: bash
+      run: |
+        #!/bin/bash
+        # vsign install script
+        shopt -s expand_aliases
+        if [ -z "$NO_COLOR" ]; then
+          alias log_info="echo -e \"\033[1;32mINFO\033[0m:\""
+          alias log_error="echo -e \"\033[1;31mERROR\033[0m:\""
+        else
+          alias log_info="echo \"INFO:\""
+          alias log_error="echo \"ERROR:\""
+        fi
+        set -e
+
+        trap "popd >/dev/null" EXIT
+
+        pushd ${{ inputs.install-dir }} > /dev/null
+
+        case ${{ runner.os }} in
+          Linux)
+            case ${{ runner.arch }} in
+              X64)
+                curl -o "venafi-codesigningclients-latest-linux-x86_64.deb" ${{ inputs.tpp-url }}/csc/clients/venafi-csc-latest-x86_64.deb
+                dpkg -i "venafi-codesigningclients-latest-linux-x86_64.deb"
+                ;;
+
+              *)
+                log_error "unsupported architecture $arch"
+                exit 1
+                ;;
+            esac
+            ;;
+
+          macOS)
+            case ${{ runner.arch }} in
+              X64)
+                bootstrap_filename='vsign-darwin-amd64'
+                bootstrap_sha=${bootstrap_darwin_amd64_sha}
+                desired_vsign_filename='vsign-darwin-amd64'
+                ;;
+
+              *)
+                log_error "unsupported architecture $arch"
+                exit 1
+                ;;
+            esac
+            ;;
+
+          Windows)
+            case ${{ runner.arch }} in
+              X64)
+                bootstrap_filename='vsign-windows-amd64.exe'
+                bootstrap_sha=${bootstrap_windows_amd64_sha}
+                desired_vsign_filename='vsign-windows-amd64.exe'
+                vsign_executable_name=vsign.exe
+                ;;
+              *)
+                log_error "unsupported architecture $arch"
+                exit 1
+                ;;
+            esac
+            ;;
+          *)
+            log_error "unsupported architecture $arch"
+            exit 1
+            ;;
+        esac
+
+        
+
+        
+
+        
+
+       
