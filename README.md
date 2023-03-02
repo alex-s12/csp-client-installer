@@ -2,6 +2,12 @@
 
 This action enables you to download and install the latest Venafi CodeSign Protect client (available for your version of Trust Protection Platform) in preparation for performing code signing operations with the Venafi CodeSign Protect platform.
 
+## Pre-requisites
+
+* Venafi Codesign Protect: 22.2+
+
+This GitHub Action takes advantage of the Code Signing Client Distribution component that can be added to your Trust Protection Platform deployment.  You can access this client distribution endpoint by adding `/csc` to your Trust Protection Platform URL.  See [Using the CodeSign Protect Client Downloads page](https://docs.venafi.com/Docs/22.2/TopNav/Content/CodeSigning/t-codesigning-install-csp.php).
+
 ## Usage
 
 This action currently supports GitHub-provided Linux, macOS and Windows runners (self-hosted runners may not work)
